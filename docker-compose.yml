@@ -1,0 +1,29 @@
+services:
+  net.graphql:
+    image: ${DOCKER_REGISTRY-}netgraphql
+    build:
+      context: .
+      dockerfile: Net.GraphQL/Dockerfile
+    networks:
+      - sqlserver_network
+  
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: sql_server_container
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=YourStrong!Passw0rd
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver_data:/var/opt/mssql
+    networks:
+      - sqlserver_network
+    restart: always
+
+volumes:
+  sqlserver_data:
+
+networks:
+  sqlserver_network:
+    driver: bridge
